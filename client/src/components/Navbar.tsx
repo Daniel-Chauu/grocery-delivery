@@ -14,22 +14,37 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "../contexts/CartContext";
 
-const Navbar = () => {
+interface Props {
+  setIsOpenCart: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Navbar = ({ setIsOpenCart }: Props) => {
   const user = {
     name: "Johndoe",
     email: "john@gmail.com",
     idAdmin: true,
   };
 
-  const { cartCount, setIsCartOpen } = {
-    cartCount: 5,
-    setIsCartOpen: (_data: any) => {},
-  };
+  const { cartCount, setIsCartOpen } = useCart();
 
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [userMenuOpen, setUserMenuOpen] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const handleSearch = (e: React.SubmitEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+    }
+  };
+
+  const handleLogout = () => {
+    setUserMenuOpen(false);
+    navigate("/");
+  };
 
   return (
     <nav className="bg-white sticky top-0 z-50 border-b border-app-border">
@@ -70,7 +85,10 @@ const Navbar = () => {
             {/* Cart */}
             <button
               className="relative p-2 rounded-xl"
-              onClick={() => setIsCartOpen(true)}
+              onClick={() => {
+                setIsCartOpen(true);
+                setIsOpenCart(true);
+              }}
             >
               <ShoppingCartIcon className="size-5 text-zinc-900" />
               {cartCount > 0 && (
@@ -178,7 +196,10 @@ const Navbar = () => {
 
                       {user && (
                         <div className="border-t border-app-border pt-1">
-                          <button className="flex items-center gap-3 px-4 py-2.5 text-sm text-app-error hover:bg-red-50 w-full transition-colors">
+                          <button
+                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-app-error hover:bg-red-50 w-full transition-colors"
+                            onClick={handleLogout}
+                          >
                             <LogOutIcon size={16} /> Logout
                           </button>
                         </div>
