@@ -1,10 +1,9 @@
 import { Zap } from "lucide-react";
-import Products from "./Products";
-import ProductList from "../components/ProductList";
-import { dummyProducts } from "../assets/assets";
 import { useEffect, useState } from "react";
-import type { Product } from "../types";
+import { dummyProducts } from "../assets/assets";
 import Loading from "../components/Loading";
+import ProductList from "../components/ProductList";
+import type { Product } from "../types";
 
 const FlashDeals = () => {
   const [products, setProducts] = useState<Product[]>([]);
